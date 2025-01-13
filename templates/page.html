@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+      }
+      [contenteditable] {
+        outline: none;
+        min-height: 100vh;
+        width: 100%;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div contenteditable="true" id="editable-content">{{ data|safe }}</div>
+    <script>
+      const editableContent = document.getElementById("editable-content");
+      const page = window.location.pathname.slice(1);
+
+      editableContent.addEventListener("input", async () => {
+        try {
+          const response = await fetch(`http://127.0.0.1:5000/${page}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: editableContent.innerHTML }),
+          });
+
+          if (!response.ok) {
+            console.error("Error saving content:", response.statusText);
+          }
+        } catch (error) {
+          console.error("Error saving content:", error);
+        }
+      });
+    </script>
+  </body>
+</html>
