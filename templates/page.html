@@ -7,6 +7,7 @@
         margin: 0;
         padding: 20px;
         font-family: Arial, sans-serif;
+        position: relative;
       }
       [contenteditable] {
         outline: none;
@@ -14,28 +15,83 @@
         width: 100%;
         box-sizing: border-box;
       }
+      .save-status {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 8px 16px;
+        border-radius: 4px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .save-status.visible {
+        opacity: 1;
+      }
+      .save-status.saving {
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+      .save-status.saved {
+        background-color: rgba(46, 125, 50, 0.7);
+      }
+      .save-status.error {
+        background-color: rgba(198, 40, 40, 0.7);
+      }
     </style>
   </head>
   <body>
     <div contenteditable="true" id="editable-content">{{ data|safe }}</div>
+    <div class="save-status" id="save-status">Saved</div>
+
     <script>
       const editableContent = document.getElementById("editable-content");
+      const saveStatus = document.getElementById("save-status");
       const page = window.location.pathname.slice(1);
+      let timeoutId = null;
 
-      editableContent.addEventListener("input", async () => {
+      function showStatus(message, type) {
+        saveStatus.textContent = message;
+        saveStatus.className = `save-status visible ${type}`;
+
+        if (type === "saved" || type === "error") {
+          setTimeout(() => {
+            saveStatus.className = "save-status";
+          }, 2000);
+        }
+      }
+
+      const saveContent = async (content) => {
+        showStatus("Saving...", "saving");
+
         try {
           const response = await fetch(`http://127.0.0.1:5000/${page}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: editableContent.innerHTML }),
+            body: JSON.stringify({ content: content }),
           });
 
           if (!response.ok) {
+            showStatus("Error saving!", "error");
             console.error("Error saving content:", response.statusText);
+          } else {
+            showStatus("Saved!", "saved");
           }
         } catch (error) {
+          showStatus("Error saving!", "error");
           console.error("Error saving content:", error);
         }
+      };
+
+      editableContent.addEventListener("input", () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+
+        timeoutId = setTimeout(() => {
+          saveContent(editableContent.innerHTML);
+        }, 2000);
       });
     </script>
   </body>
