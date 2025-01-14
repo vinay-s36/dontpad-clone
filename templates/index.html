@@ -1,10 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dontpad</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f8f9fa;
+        color: #333;
+      }
+      .container {
+        text-align: center;
+        margin-bottom: 10%;
+      }
+      .title {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+      .subtitle {
+        font-size: 1.25rem;
+        color: #666;
+        margin-bottom: 2rem;
+      }
+      .input-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+      .url-prefix {
+        background-color: #ddd;
+        padding: 0.5rem 1rem;
+        border: 1px solid #ccc;
+        border-right: none;
+        border-radius: 5px 0 0 5px;
+      }
+      .input-field {
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 0;
+        flex: 1;
+        max-width: 300px;
+        border-right: none;
+      }
+      .go-button {
+        padding: 0.5rem 1rem;
+        background-color: #dddddd;
+        border: none;
+        cursor: pointer;
+        border-radius: 0 5px 5px 0;
+        font-size: 1rem;
+      }
+      footer {
+        margin-top: 2rem;
+        font-size: 0.9rem;
+        color: #777;
+      }
+      footer a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
   </head>
   <body>
-    <h1>Welcome to Dontpad Clone</h1>
-    <p>Enter any path in the URL to create or edit a page.</p>
+    <div class="container">
+      <h1 class="title">DONTPAD</h1>
+      <p class="subtitle">The simplest way to share text online</p>
+      <div class="input-container">
+        <span class="url-prefix">dontpad.com/</span>
+        <input type="text" placeholder="your-secret-page" class="input-field" />
+        <button class="go-button" onclick="navigateToPage()">Go!</button>
+      </div>
+      <footer>
+        <a href="https://github.com/vinay-s36/dontpad-clone" target="_blank"
+          >View Source Code on GitHub</a
+        >
+      </footer>
+      <script>
+        function navigateToPage() {
+          const page = document.querySelector(".input-field").value;
+          if (page != "") {
+            window.location.href = `/${page}`;
+          } else {
+            alert("Please enter a valid page name.");
+          }
+        }
+      </script>
+    </div>
   </body>
 </html>
